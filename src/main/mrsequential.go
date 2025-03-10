@@ -37,16 +37,21 @@ func main() {
 	//
 	intermediate := []mr.KeyValue{}
 	for _, filename := range os.Args[2:] {
+		// 根据文件名获取文件对象
 		file, err := os.Open(filename)
 		if err != nil {
 			log.Fatalf("cannot open %v", filename)
 		}
+		// 读取文件对象的内容
 		content, err := ioutil.ReadAll(file)
 		if err != nil {
 			log.Fatalf("cannot read %v", filename)
 		}
+		// 释放
 		file.Close()
+		// 传入文件名，内容字符，获取K/V对
 		kva := mapf(filename, string(content))
+		// 解构扩展K/V中间体
 		intermediate = append(intermediate, kva...)
 	}
 
@@ -57,7 +62,7 @@ func main() {
 	//
 
 	sort.Sort(ByKey(intermediate))
-
+	// 创建文件对象
 	oname := "mr-out-0"
 	ofile, _ := os.Create(oname)
 
@@ -68,13 +73,16 @@ func main() {
 	i := 0
 	for i < len(intermediate) {
 		j := i + 1
+		// 找到属于同一个K的K/V对范围，左闭右开
 		for j < len(intermediate) && intermediate[j].Key == intermediate[i].Key {
 			j++
 		}
 		values := []string{}
 		for k := i; k < j; k++ {
+			// 将同一个K的值合成在同一个向量/数组里面
 			values = append(values, intermediate[k].Value)
 		}
+		// 传入K，向量，获取统计结果
 		output := reducef(intermediate[i].Key, values)
 
 		// this is the correct format for each line of Reduce output.
@@ -86,10 +94,8 @@ func main() {
 	ofile.Close()
 }
 
-//
 // load the application Map and Reduce functions
 // from a plugin file, e.g. ../mrapps/wc.so
-//
 func loadPlugin(filename string) (func(string, string) []mr.KeyValue, func(string, []string) string) {
 	p, err := plugin.Open(filename)
 	if err != nil {
