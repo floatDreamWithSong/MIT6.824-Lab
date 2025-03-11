@@ -15,15 +15,16 @@ import "strconv"
 //
 
 type ExampleArgs struct {
-	X int
+	workerId int
 }
 
 type ExampleReply struct {
-	Y int
+	taskType int
+	filename string
 }
 
 // Add your RPC definitions here.
-
+// 在此处添加RPC代码
 
 // Cook up a unique-ish UNIX-domain socket name
 // in /var/tmp, for the master.
