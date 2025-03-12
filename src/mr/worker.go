@@ -125,12 +125,12 @@ func Worker(mapf func(string, string) []KeyValue,
 				TaskType: MAP,
 				TaskId:   reply.TaskId,
 				// 任务开始时间
-				startTime: reply.startTime,
+				StartTime: reply.StartTime,
 			}
 			submitArgs.Filename = filenames
 			submitReply := SubmitTaskReply{}
 			ok := call("Master.HandleSubmitTask", &submitArgs, &submitReply)
-			if!ok {
+			if !ok {
 				log.Fatalf("cannot submit task")
 			}
 		} else if reply.TaskType == REDUCE {
@@ -140,14 +140,14 @@ func Worker(mapf func(string, string) []KeyValue,
 			for _, filename := range reply.Filename {
 				// 根据文件名获取文件对象
 				file, err := os.Open(filename)
-				if err!= nil {
+				if err != nil {
 					log.Fatalf("cannot open %v", filename)
 				}
 				// 读取文件对象的内容
 				dec := json.NewDecoder(file)
 				for {
 					var kv KeyValue
-					if err:= dec.Decode(&kv); err!= nil {
+					if err := dec.Decode(&kv); err != nil {
 						break
 					}
 					intermediate = append(intermediate, kv)
@@ -158,7 +158,7 @@ func Worker(mapf func(string, string) []KeyValue,
 			sort.Sort(ByKey(intermediate))
 			// 创建中间输出文件
 			file, err := ioutil.TempFile("./", "mr-out-*")
-			if err!= nil {
+			if err != nil {
 				log.Fatalf("cannot create %v", file.Name())
 			}
 
@@ -176,10 +176,10 @@ func Worker(mapf func(string, string) []KeyValue,
 				}
 				// 传入K，向量，获取统计结果
 				output := reducef(intermediate[i].Key, values)
-		
+
 				// this is the correct format for each line of Reduce output.
 				fmt.Fprintf(file, "%v %v\n", intermediate[i].Key, output)
-		
+
 				i = j
 			}
 			// 重命名
@@ -190,12 +190,12 @@ func Worker(mapf func(string, string) []KeyValue,
 				TaskType: REDUCE,
 				TaskId:   reply.TaskId,
 				// 同步任务开始时间
-				startTime: reply.startTime,
+				StartTime: reply.StartTime,
 			}
 			submitArgs.Filename = []string{"mr-out-" + strconv.Itoa(reply.TaskId)}
 			submitReply := SubmitTaskReply{}
 			ok := call("Master.HandleSubmitTask", &submitArgs, &submitReply)
-			if!ok {
+			if !ok {
 				log.Fatalf("cannot submit task")
 			}
 		} else if reply.TaskType == CLOSE {

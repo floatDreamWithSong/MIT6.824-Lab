@@ -15,12 +15,13 @@ import (
 
 type Master struct {
 	// Your definitions here.
-	files            []string
-	nReduce          int
-	mapTasks         []Task
-	reduceTasks      []Task
-	completedTaskNum int
-	mu               sync.Mutex
+	files                 []string
+	nReduce               int
+	mapTasks              []Task
+	reduceTasks           []Task
+	completedTaskNum      int
+	completedTaskNumMutex sync.Mutex
+	mu                    sync.Mutex
 }
 
 type TaskStatus int
@@ -44,13 +45,13 @@ func (m *Master) checkTaskStatus() {
 		time.Sleep(500 * time.Millisecond)
 		m.mu.Lock()
 		for i, task := range m.mapTasks {
-			if task.status == IN_PROGRESS && time.Since(time.Unix(task.startTime,0)) > 10*time.Second {
+			if task.status == IN_PROGRESS && time.Since(time.Unix(task.StartTime, 0)) > 10*time.Second {
 				log.Default().Printf("map task %d timeout", task.TaskId)
 				m.mapTasks[i].status = NOT_STARTED
 			}
 		}
 		for i, task := range m.reduceTasks {
-			if task.status == IN_PROGRESS && time.Since(time.Unix(task.startTime,0)) > 10*time.Second {
+			if task.status == IN_PROGRESS && time.Since(time.Unix(task.StartTime, 0)) > 10*time.Second {
 				log.Default().Printf("reduce task %d timeout", task.TaskId)
 				m.reduceTasks[i].status = NOT_STARTED
 			}
@@ -81,7 +82,7 @@ func (m *Master) HandleRequestTask(args *RequestTaskArgs, reply *RequestTaskRepl
 			task.status = IN_PROGRESS
 			// 记录任务开始时间
 			startTime := time.Now().Unix()
-			task.startTime = startTime
+			task.StartTime = startTime
 			m.mapTasks[index] = task
 			*reply = task.RequestTaskReply
 			return nil
@@ -100,7 +101,7 @@ func (m *Master) HandleRequestTask(args *RequestTaskArgs, reply *RequestTaskRepl
 		if task.status == NOT_STARTED {
 			task.status = IN_PROGRESS
 			startTime := time.Now().Unix()
-			task.startTime = startTime
+			task.StartTime = startTime
 			m.reduceTasks[index] = task
 			*reply = task.RequestTaskReply
 			return nil
@@ -129,7 +130,7 @@ func (m *Master) HandleSubmitTask(args *SubmitTaskArgs, reply *SubmitTaskReply) 
 	// 如果是Map任务，检查任务时间戳，将任务状态修改为COMPLETED，并根据work生成的中间文件的末尾数字，将其加入到对应reduceId的文件列表中,中间文件的格式为mr-<mapId>-<reduceId>
 	if args.TaskType == MAP {
 		for index, task := range m.mapTasks {
-			if task.TaskId == args.TaskId && task.startTime == args.startTime {
+			if task.TaskId == args.TaskId && task.StartTime == args.StartTime {
 				m.mapTasks[index].status = COMPLETED
 				for _, filename := range args.Filename {
 					// 解析文件名，以-为分隔符，获取reduceId
@@ -151,9 +152,11 @@ func (m *Master) HandleSubmitTask(args *SubmitTaskArgs, reply *SubmitTaskReply) 
 		}
 	} else if args.TaskType == REDUCE {
 		for index, task := range m.reduceTasks {
-			if task.TaskId == args.TaskId && task.startTime == args.startTime {
+			if task.TaskId == args.TaskId && task.StartTime == args.StartTime {
 				m.reduceTasks[index].status = COMPLETED
+				m.completedTaskNumMutex.Lock()
 				m.completedTaskNum++
+				m.completedTaskNumMutex.Unlock()
 				break
 			}
 		}
@@ -182,6 +185,8 @@ func (m *Master) server() {
 // if the entire job has finished.
 // 这个会被定期调用用来检验工作是否完成
 func (m *Master) Done() bool {
+	m.completedTaskNumMutex.Lock()
+	defer m.completedTaskNumMutex.Unlock()
 	// Your code here.
 	return m.completedTaskNum >= len(m.files)
 }

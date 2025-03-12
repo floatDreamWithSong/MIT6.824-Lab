@@ -39,18 +39,18 @@ const (
 type RequestTaskArgs struct{}
 
 type RequestTaskReply struct {
-	TaskType TaskType
-	Filename []string
-	TaskId   int
-	NReduce  int
-	startTime int64
+	TaskType  TaskType
+	Filename  []string
+	TaskId    int
+	NReduce   int
+	StartTime int64
 }
 
 type SubmitTaskArgs struct {
-	TaskType TaskType
-	Filename []string
-	TaskId   int
-	startTime int64
+	TaskType  TaskType
+	Filename  []string
+	TaskId    int
+	StartTime int64
 }
 
 type SubmitTaskReply struct{}
@@ -60,7 +60,7 @@ type SubmitTaskReply struct{}
 // Can't use the current directory since
 // Athena AFS doesn't support UNIX-domain sockets.
 func masterSock() string {
-	s := "/cloudide/workspace/MIT6.824-Lab/src/mr/tmp/824-mr-"
+	s := "/home/dhj/go-projects/MIT6.824-Lab/src/mr/tmp/824-mr-0"
 	s += strconv.Itoa(os.Getuid())
 	return s
 }
