@@ -42,12 +42,13 @@ func Worker(mapf func(string, string) []KeyValue,
 	// 此处添加worker实现
 	// uncomment to send the Example RPC to the master.
 	// CallExample()
+	// return
 	for {
 		args := RequestTaskArgs{}
 		reply := RequestTaskReply{}
 		call("Master.HandleRequestTask", &args, &reply)
 		// 打印出任务信息
-		fmt.Printf("TaskType: %v, Filename: %v, TaskId: %v, NReduce: %v\n", reply.TaskType, reply.Filename, reply.TaskId, reply.NReduce)
+		fmt.Printf("receive: %+v\n", reply)
 		// 若任务类型为MAP，说明有任务需要处理
 		if reply.TaskType == WAIT {
 			time.Sleep(3 * time.Second)
@@ -123,6 +124,8 @@ func Worker(mapf func(string, string) []KeyValue,
 			submitArgs := SubmitTaskArgs{
 				TaskType: MAP,
 				TaskId:   reply.TaskId,
+				// 任务开始时间
+				startTime: reply.startTime,
 			}
 			submitArgs.Filename = filenames
 			submitReply := SubmitTaskReply{}
@@ -186,6 +189,8 @@ func Worker(mapf func(string, string) []KeyValue,
 			submitArgs := SubmitTaskArgs{
 				TaskType: REDUCE,
 				TaskId:   reply.TaskId,
+				// 同步任务开始时间
+				startTime: reply.startTime,
 			}
 			submitArgs.Filename = []string{"mr-out-" + strconv.Itoa(reply.TaskId)}
 			submitReply := SubmitTaskReply{}
@@ -209,7 +214,7 @@ func CallExample() {
 	args := ExampleArgs{}
 
 	// fill in the argument(s).
-	args.X = 99
+	args.X = time.Now().Unix()
 
 	// declare a reply structure.
 	reply := ExampleReply{}
@@ -218,7 +223,7 @@ func CallExample() {
 	call("Master.Example", &args, &reply)
 
 	// reply.Y should be 100.
-	fmt.Printf("reply.Y %v\n", reply.Y)
+	fmt.Printf("reply.Y %v\n should be %v", reply.Y, args.X+1)
 }
 
 // send an RPC request to the master, wait for the response.

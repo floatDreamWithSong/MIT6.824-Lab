@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Master struct {
@@ -33,8 +34,29 @@ const (
 // Your code here -- RPC handlers for the worker to call.
 type Task struct {
 	RequestTaskReply
-	startTime int64
-	status    TaskStatus
+	status TaskStatus
+}
+
+func (m *Master) checkTaskStatus() {
+	// 持续遍历任务队列，对于处于IN_PROGRESS的任务，检查任务是否超时(10s)，如果超时，将任务状态修改为NOT_STARTED，然后重新分配任务
+
+	for {
+		time.Sleep(500 * time.Millisecond)
+		m.mu.Lock()
+		for i, task := range m.mapTasks {
+			if task.status == IN_PROGRESS && time.Since(time.Unix(task.startTime,0)) > 10*time.Second {
+				log.Default().Printf("map task %d timeout", task.TaskId)
+				m.mapTasks[i].status = NOT_STARTED
+			}
+		}
+		for i, task := range m.reduceTasks {
+			if task.status == IN_PROGRESS && time.Since(time.Unix(task.startTime,0)) > 10*time.Second {
+				log.Default().Printf("reduce task %d timeout", task.TaskId)
+				m.reduceTasks[i].status = NOT_STARTED
+			}
+		}
+		m.mu.Unlock()
+	}
 }
 
 // an example RPC handler.
@@ -57,6 +79,9 @@ func (m *Master) HandleRequestTask(args *RequestTaskArgs, reply *RequestTaskRepl
 	for index, task := range m.mapTasks {
 		if task.status == NOT_STARTED {
 			task.status = IN_PROGRESS
+			// 记录任务开始时间
+			startTime := time.Now().Unix()
+			task.startTime = startTime
 			m.mapTasks[index] = task
 			*reply = task.RequestTaskReply
 			return nil
@@ -74,6 +99,8 @@ func (m *Master) HandleRequestTask(args *RequestTaskArgs, reply *RequestTaskRepl
 	for index, task := range m.reduceTasks {
 		if task.status == NOT_STARTED {
 			task.status = IN_PROGRESS
+			startTime := time.Now().Unix()
+			task.startTime = startTime
 			m.reduceTasks[index] = task
 			*reply = task.RequestTaskReply
 			return nil
@@ -99,10 +126,10 @@ func (m *Master) HandleSubmitTask(args *SubmitTaskArgs, reply *SubmitTaskReply) 
 		m.mu.Unlock()
 		fmt.Printf("receive: %+v\n", args)
 	}()
-	// 如果是Map任务，将任务状态修改为COMPLETED，并根据work生成的中间文件的末尾数字，将其加入到对应reduceId的文件列表中,中间文件的格式为mr-<mapId>-<reduceId>
+	// 如果是Map任务，检查任务时间戳，将任务状态修改为COMPLETED，并根据work生成的中间文件的末尾数字，将其加入到对应reduceId的文件列表中,中间文件的格式为mr-<mapId>-<reduceId>
 	if args.TaskType == MAP {
 		for index, task := range m.mapTasks {
-			if task.TaskId == args.TaskId {
+			if task.TaskId == args.TaskId && task.startTime == args.startTime {
 				m.mapTasks[index].status = COMPLETED
 				for _, filename := range args.Filename {
 					// 解析文件名，以-为分隔符，获取reduceId
@@ -124,7 +151,7 @@ func (m *Master) HandleSubmitTask(args *SubmitTaskArgs, reply *SubmitTaskReply) 
 		}
 	} else if args.TaskType == REDUCE {
 		for index, task := range m.reduceTasks {
-			if task.TaskId == args.TaskId {
+			if task.TaskId == args.TaskId && task.startTime == args.startTime {
 				m.reduceTasks[index].status = COMPLETED
 				m.completedTaskNum++
 				break
@@ -148,6 +175,7 @@ func (m *Master) server() {
 	}
 	fmt.Println("master start at ", sockname)
 	go http.Serve(l, nil)
+	go m.checkTaskStatus()
 }
 
 // main/mrmaster.go calls Done() periodically to find out
@@ -178,7 +206,6 @@ func MakeMaster(files []string, nReduce int) *Master {
 	for index, file := range files {
 		task := Task{
 			RequestTaskReply: RequestTaskReply{},
-			startTime:        0,
 		}
 		task.TaskType = MAP
 		task.TaskId = index
@@ -191,8 +218,8 @@ func MakeMaster(files []string, nReduce int) *Master {
 	for index := 0; index < nReduce; index++ {
 		task := Task{
 			RequestTaskReply: RequestTaskReply{},
-			startTime:        0,
 		}
+
 		task.TaskType = REDUCE
 		task.TaskId = index
 		task.status = NOT_STARTED

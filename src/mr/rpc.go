@@ -17,11 +17,11 @@ import (
 //
 
 type ExampleArgs struct {
-	X int
+	X int64
 }
 
 type ExampleReply struct {
-	Y int
+	Y int64
 }
 
 // Add your RPC definitions here.
@@ -43,12 +43,14 @@ type RequestTaskReply struct {
 	Filename []string
 	TaskId   int
 	NReduce  int
+	startTime int64
 }
 
 type SubmitTaskArgs struct {
 	TaskType TaskType
 	Filename []string
 	TaskId   int
+	startTime int64
 }
 
 type SubmitTaskReply struct{}
