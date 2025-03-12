@@ -50,7 +50,7 @@ func Worker(mapf func(string, string) []KeyValue,
 		fmt.Printf("TaskType: %v, Filename: %v, TaskId: %v, NReduce: %v\n", reply.TaskType, reply.Filename, reply.TaskId, reply.NReduce)
 		// 若任务类型为MAP，说明有任务需要处理
 		if reply.TaskType == WAIT {
-			time.Sleep(1 * time.Second)
+			time.Sleep(3 * time.Second)
 		} else if reply.TaskType == MAP {
 			// map任务: 读取文件，将文件内容传入mapf，获取K/V对，遍历K/V对数组，根据K值映射到reduce任务，reduce任务的编号为ihash%nReduce
 			// 此外还要用map记录每个编号对应的K/V对数组所生成的临时文件TempFile。
@@ -91,7 +91,7 @@ func Worker(mapf func(string, string) []KeyValue,
 				sort.Sort(ByKey(kvpair))
 				// 生成中间文件
 				file, err := ioutil.TempFile("./", "mr-tmp-*")
-				defer file.Close()
+				// defer file.Close()
 				if err != nil {
 					log.Fatalf("cannot create %v", file.Name())
 				}
@@ -106,7 +106,8 @@ func Worker(mapf func(string, string) []KeyValue,
 				// 记录reduce任务编号对应TempFile
 				reduceTaskId_TempFile[reduceTaskId] = file
 			}
-			// 遍历map，重命名为真正的文件
+			// 遍历map，重命名为真正的文件，并记录生成的filename
+			filenames := []string{}
 			for reduceTaskId, file := range reduceTaskId_TempFile {
 				// 重命名
 				filename := "mr-" + strconv.Itoa(reply.TaskId) + "-" + strconv.Itoa(reduceTaskId)
@@ -115,7 +116,85 @@ func Worker(mapf func(string, string) []KeyValue,
 					log.Fatalf("cannot rename %v", file.Name())
 				}
 				file.Close()
+				// 记录文件名
+				filenames = append(filenames, filename)
 			}
+			// 上报给master
+			submitArgs := SubmitTaskArgs{
+				TaskType: MAP,
+				TaskId:   reply.TaskId,
+			}
+			submitArgs.Filename = filenames
+			submitReply := SubmitTaskReply{}
+			ok := call("Master.HandleSubmitTask", &submitArgs, &submitReply)
+			if!ok {
+				log.Fatalf("cannot submit task")
+			}
+		} else if reply.TaskType == REDUCE {
+			// reduce任务: 读取文件，将文件内容传入reducef，获取K/V对，遍历K/V对数组，根据K值映射到reduce任务，reduce任务的编号为ihash%nReduce
+			// 此外还要用map记录每个编号对应的K/V对数组所生成的临时文件TempFile。
+			intermediate := []KeyValue{}
+			for _, filename := range reply.Filename {
+				// 根据文件名获取文件对象
+				file, err := os.Open(filename)
+				if err!= nil {
+					log.Fatalf("cannot open %v", filename)
+				}
+				// 读取文件对象的内容
+				dec := json.NewDecoder(file)
+				for {
+					var kv KeyValue
+					if err:= dec.Decode(&kv); err!= nil {
+						break
+					}
+					intermediate = append(intermediate, kv)
+				}
+				// 释放
+				file.Close()
+			}
+			sort.Sort(ByKey(intermediate))
+			// 创建中间输出文件
+			file, err := ioutil.TempFile("./", "mr-out-*")
+			if err!= nil {
+				log.Fatalf("cannot create %v", file.Name())
+			}
+
+			i := 0
+			for i < len(intermediate) {
+				j := i + 1
+				// 找到属于同一个K的K/V对范围，左闭右开
+				for j < len(intermediate) && intermediate[j].Key == intermediate[i].Key {
+					j++
+				}
+				values := []string{}
+				for k := i; k < j; k++ {
+					// 将同一个K的值合成在同一个向量/数组里面
+					values = append(values, intermediate[k].Value)
+				}
+				// 传入K，向量，获取统计结果
+				output := reducef(intermediate[i].Key, values)
+		
+				// this is the correct format for each line of Reduce output.
+				fmt.Fprintf(file, "%v %v\n", intermediate[i].Key, output)
+		
+				i = j
+			}
+			// 重命名
+			os.Rename(file.Name(), "mr-out-"+strconv.Itoa(reply.TaskId))
+			file.Close()
+			// 上报给master
+			submitArgs := SubmitTaskArgs{
+				TaskType: REDUCE,
+				TaskId:   reply.TaskId,
+			}
+			submitArgs.Filename = []string{"mr-out-" + strconv.Itoa(reply.TaskId)}
+			submitReply := SubmitTaskReply{}
+			ok := call("Master.HandleSubmitTask", &submitArgs, &submitReply)
+			if!ok {
+				log.Fatalf("cannot submit task")
+			}
+		} else if reply.TaskType == CLOSE {
+			break
 		}
 	}
 

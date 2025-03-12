@@ -33,6 +33,7 @@ const (
 	MAP TaskType = iota
 	REDUCE
 	WAIT
+	CLOSE
 )
 
 type RequestTaskArgs struct{}
