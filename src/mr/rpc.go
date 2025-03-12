@@ -60,7 +60,7 @@ type SubmitTaskReply struct{}
 // Can't use the current directory since
 // Athena AFS doesn't support UNIX-domain sockets.
 func masterSock() string {
-	s := "/home/dhj/go-projects/MIT6.824-Lab/src/mr/tmp/824-mr-0"
+	s := "/var/tmp/824-mr-"
 	s += strconv.Itoa(os.Getuid())
 	return s
 }

@@ -15,13 +15,12 @@ import (
 
 type Master struct {
 	// Your definitions here.
-	files                 []string
-	nReduce               int
-	mapTasks              []Task
-	reduceTasks           []Task
-	completedTaskNum      int
-	completedTaskNumMutex sync.Mutex
-	mu                    sync.Mutex
+	files            []string
+	nReduce          int
+	mapTasks         []Task
+	reduceTasks      []Task
+	completedTaskNum int
+	mu               sync.Mutex
 }
 
 type TaskStatus int
@@ -46,13 +45,13 @@ func (m *Master) checkTaskStatus() {
 		m.mu.Lock()
 		for i, task := range m.mapTasks {
 			if task.status == IN_PROGRESS && time.Since(time.Unix(task.StartTime, 0)) > 10*time.Second {
-				log.Default().Printf("map task %d timeout", task.TaskId)
+				log.Default().Printf("Mater: map task %d timeout", task.TaskId)
 				m.mapTasks[i].status = NOT_STARTED
 			}
 		}
 		for i, task := range m.reduceTasks {
 			if task.status == IN_PROGRESS && time.Since(time.Unix(task.StartTime, 0)) > 10*time.Second {
-				log.Default().Printf("reduce task %d timeout", task.TaskId)
+				log.Default().Printf("Master: reduce task %d timeout", task.TaskId)
 				m.reduceTasks[i].status = NOT_STARTED
 			}
 		}
@@ -74,7 +73,7 @@ func (m *Master) HandleRequestTask(args *RequestTaskArgs, reply *RequestTaskRepl
 	defer func() {
 		m.mu.Unlock() // 确保在函数结束时解锁
 		// 输出reply的内容
-		fmt.Printf("reply: %+v\n", reply)
+		//fmt.Printf("reply: %+v\n", reply)
 	}()
 	// 若有map任务处于NOT_STARTED状态，将其状态修改为IN_PROGRESS，并返回任务
 	for index, task := range m.mapTasks {
@@ -125,7 +124,7 @@ func (m *Master) HandleSubmitTask(args *SubmitTaskArgs, reply *SubmitTaskReply) 
 	m.mu.Lock()
 	defer func() {
 		m.mu.Unlock()
-		fmt.Printf("receive: %+v\n", args)
+		fmt.Printf("Master: receive submission: %+v\n", args)
 	}()
 	// 如果是Map任务，检查任务时间戳，将任务状态修改为COMPLETED，并根据work生成的中间文件的末尾数字，将其加入到对应reduceId的文件列表中,中间文件的格式为mr-<mapId>-<reduceId>
 	if args.TaskType == MAP {
@@ -154,9 +153,7 @@ func (m *Master) HandleSubmitTask(args *SubmitTaskArgs, reply *SubmitTaskReply) 
 		for index, task := range m.reduceTasks {
 			if task.TaskId == args.TaskId && task.StartTime == args.StartTime {
 				m.reduceTasks[index].status = COMPLETED
-				m.completedTaskNumMutex.Lock()
 				m.completedTaskNum++
-				m.completedTaskNumMutex.Unlock()
 				break
 			}
 		}
@@ -176,7 +173,7 @@ func (m *Master) server() {
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
-	fmt.Println("master start at ", sockname)
+	fmt.Printf("Master %v : start at %v \n", os.Getpid(), sockname)
 	go http.Serve(l, nil)
 	go m.checkTaskStatus()
 }
@@ -185,8 +182,8 @@ func (m *Master) server() {
 // if the entire job has finished.
 // 这个会被定期调用用来检验工作是否完成
 func (m *Master) Done() bool {
-	m.completedTaskNumMutex.Lock()
-	defer m.completedTaskNumMutex.Unlock()
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	// Your code here.
 	return m.completedTaskNum >= len(m.files)
 }
@@ -199,12 +196,12 @@ func MakeMaster(files []string, nReduce int) *Master {
 
 	// Your code here.
 	// 初始化Master
-	fmt.Println("receive files:")
+	//fmt.Println("receive files:")
 	for _, file := range files {
 		fmt.Println(file)
 	}
 	m.files = files
-	fmt.Println("receive nReduce:", nReduce)
+	//fmt.Println("receive nReduce:", nReduce)
 	m.nReduce = nReduce
 
 	// 初始化map任务

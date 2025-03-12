@@ -48,7 +48,7 @@ func Worker(mapf func(string, string) []KeyValue,
 		reply := RequestTaskReply{}
 		call("Master.HandleRequestTask", &args, &reply)
 		// 打印出任务信息
-		fmt.Printf("receive: %+v\n", reply)
+		fmt.Printf("Worker %v: receive: %+v\n", os.Getpid(), reply)
 		// 若任务类型为MAP，说明有任务需要处理
 		if reply.TaskType == WAIT {
 			time.Sleep(3 * time.Second)
