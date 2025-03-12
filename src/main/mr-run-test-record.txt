@@ -1,0 +1,268 @@
+*** Starting wc test.
+../pg-being_ernest.txt
+../pg-dorian_gray.txt
+../pg-frankenstein.txt
+../pg-grimm.txt
+../pg-huckleberry_finn.txt
+../pg-metamorphosis.txt
+../pg-sherlock_holmes.txt
+../pg-tom_sawyer.txt
+Master 124269 : start at /var/tmp/824-mr-0 
+Worker 124282: receive: {TaskType:0 Filename:[../pg-frankenstein.txt] TaskId:2 NReduce:10 StartTime:1741769484}
+Worker 124284: receive: {TaskType:0 Filename:[../pg-dorian_gray.txt] TaskId:1 NReduce:10 StartTime:1741769484}
+Worker 124283: receive: {TaskType:0 Filename:[../pg-being_ernest.txt] TaskId:0 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:0 Filename:[mr-0-0 mr-0-7 mr-0-2 mr-0-1 mr-0-8 mr-0-6 mr-0-4 mr-0-9 mr-0-3 mr-0-5] TaskId:0 StartTime:1741769484}
+Worker 124283: receive: {TaskType:0 Filename:[../pg-grimm.txt] TaskId:3 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:0 Filename:[mr-2-6 mr-2-3 mr-2-1 mr-2-7 mr-2-0 mr-2-4 mr-2-5 mr-2-8 mr-2-2 mr-2-9] TaskId:2 StartTime:1741769484}
+Worker 124282: receive: {TaskType:0 Filename:[../pg-huckleberry_finn.txt] TaskId:4 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:0 Filename:[mr-1-0 mr-1-2 mr-1-4 mr-1-1 mr-1-8 mr-1-9 mr-1-5 mr-1-7 mr-1-6 mr-1-3] TaskId:1 StartTime:1741769484}
+Worker 124284: receive: {TaskType:0 Filename:[../pg-metamorphosis.txt] TaskId:5 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:0 Filename:[mr-5-2 mr-5-3 mr-5-6 mr-5-5 mr-5-1 mr-5-7 mr-5-9 mr-5-4 mr-5-0 mr-5-8] TaskId:5 StartTime:1741769484}
+Worker 124284: receive: {TaskType:0 Filename:[../pg-sherlock_holmes.txt] TaskId:6 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:0 Filename:[mr-3-5 mr-3-3 mr-3-6 mr-3-8 mr-3-7 mr-3-9 mr-3-0 mr-3-4 mr-3-1 mr-3-2] TaskId:3 StartTime:1741769484}
+Worker 124283: receive: {TaskType:0 Filename:[../pg-tom_sawyer.txt] TaskId:7 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:0 Filename:[mr-4-7 mr-4-1 mr-4-5 mr-4-4 mr-4-2 mr-4-9 mr-4-6 mr-4-0 mr-4-3 mr-4-8] TaskId:4 StartTime:1741769484}
+Worker 124282: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Master: receive submission: &{TaskType:0 Filename:[mr-7-9 mr-7-6 mr-7-3 mr-7-4 mr-7-8 mr-7-5 mr-7-0 mr-7-2 mr-7-1 mr-7-7] TaskId:7 StartTime:1741769484}
+Worker 124283: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Master: receive submission: &{TaskType:0 Filename:[mr-6-6 mr-6-8 mr-6-9 mr-6-1 mr-6-0 mr-6-7 mr-6-3 mr-6-2 mr-6-4 mr-6-5] TaskId:6 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-0 mr-2-0 mr-1-0 mr-5-0 mr-3-0 mr-4-0 mr-7-0 mr-6-0] TaskId:0 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-0] TaskId:0 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-1 mr-2-1 mr-1-1 mr-5-1 mr-3-1 mr-4-1 mr-7-1 mr-6-1] TaskId:1 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-1] TaskId:1 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-2 mr-2-2 mr-1-2 mr-5-2 mr-3-2 mr-4-2 mr-7-2 mr-6-2] TaskId:2 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-2] TaskId:2 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-3 mr-2-3 mr-1-3 mr-5-3 mr-3-3 mr-4-3 mr-7-3 mr-6-3] TaskId:3 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-3] TaskId:3 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-4 mr-2-4 mr-1-4 mr-5-4 mr-3-4 mr-4-4 mr-7-4 mr-6-4] TaskId:4 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-4] TaskId:4 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-5 mr-2-5 mr-1-5 mr-5-5 mr-3-5 mr-4-5 mr-7-5 mr-6-5] TaskId:5 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-5] TaskId:5 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-6 mr-2-6 mr-1-6 mr-5-6 mr-3-6 mr-4-6 mr-7-6 mr-6-6] TaskId:6 NReduce:10 StartTime:1741769484}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-6] TaskId:6 StartTime:1741769484}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-7 mr-2-7 mr-1-7 mr-5-7 mr-3-7 mr-4-7 mr-7-7 mr-6-7] TaskId:7 NReduce:10 StartTime:1741769485}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-7] TaskId:7 StartTime:1741769485}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-8 mr-2-8 mr-1-8 mr-5-8 mr-3-8 mr-4-8 mr-7-8 mr-6-8] TaskId:8 NReduce:10 StartTime:1741769485}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-8] TaskId:8 StartTime:1741769485}
+Worker 124284: receive: {TaskType:1 Filename:[mr-0-9 mr-2-9 mr-1-9 mr-5-9 mr-3-9 mr-4-9 mr-7-9 mr-6-9] TaskId:9 NReduce:10 StartTime:1741769485}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-9] TaskId:9 StartTime:1741769485}
+Worker 124284: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+All tasks have finished
+--- wc test: PASS
+*** Starting indexer test.
+../pg-being_ernest.txt
+../pg-dorian_gray.txt
+../pg-frankenstein.txt
+../pg-grimm.txt
+../pg-huckleberry_finn.txt
+../pg-metamorphosis.txt
+../pg-sherlock_holmes.txt
+../pg-tom_sawyer.txt
+Master 124359 : start at /var/tmp/824-mr-0 
+Worker 124372: receive: {TaskType:0 Filename:[../pg-dorian_gray.txt] TaskId:1 NReduce:10 StartTime:1741769488}
+Worker 124371: receive: {TaskType:0 Filename:[../pg-being_ernest.txt] TaskId:0 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-0-6 mr-0-8 mr-0-0 mr-0-7 mr-0-2 mr-0-3 mr-0-5 mr-0-1 mr-0-9 mr-0-4] TaskId:0 StartTime:1741769488}
+Worker 124371: receive: {TaskType:0 Filename:[../pg-frankenstein.txt] TaskId:2 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-1-2 mr-1-1 mr-1-9 mr-1-3 mr-1-7 mr-1-8 mr-1-5 mr-1-0 mr-1-4 mr-1-6] TaskId:1 StartTime:1741769488}
+Worker 124372: receive: {TaskType:0 Filename:[../pg-grimm.txt] TaskId:3 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-2-2 mr-2-7 mr-2-6 mr-2-0 mr-2-8 mr-2-1 mr-2-5 mr-2-4 mr-2-3 mr-2-9] TaskId:2 StartTime:1741769488}
+Worker 124371: receive: {TaskType:0 Filename:[../pg-huckleberry_finn.txt] TaskId:4 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-3-5 mr-3-4 mr-3-9 mr-3-3 mr-3-0 mr-3-6 mr-3-1 mr-3-2 mr-3-7 mr-3-8] TaskId:3 StartTime:1741769488}
+Worker 124372: receive: {TaskType:0 Filename:[../pg-metamorphosis.txt] TaskId:5 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-5-1 mr-5-4 mr-5-5 mr-5-2 mr-5-9 mr-5-3 mr-5-6 mr-5-8 mr-5-7 mr-5-0] TaskId:5 StartTime:1741769488}
+Worker 124372: receive: {TaskType:0 Filename:[../pg-sherlock_holmes.txt] TaskId:6 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-4-6 mr-4-8 mr-4-5 mr-4-3 mr-4-0 mr-4-9 mr-4-2 mr-4-7 mr-4-1 mr-4-4] TaskId:4 StartTime:1741769488}
+Worker 124371: receive: {TaskType:0 Filename:[../pg-tom_sawyer.txt] TaskId:7 NReduce:10 StartTime:1741769488}
+Master: receive submission: &{TaskType:0 Filename:[mr-7-8 mr-7-1 mr-7-3 mr-7-0 mr-7-4 mr-7-6 mr-7-5 mr-7-7 mr-7-2 mr-7-9] TaskId:7 StartTime:1741769488}
+Worker 124371: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Master: receive submission: &{TaskType:0 Filename:[mr-6-8 mr-6-3 mr-6-1 mr-6-6 mr-6-4 mr-6-0 mr-6-5 mr-6-7 mr-6-2 mr-6-9] TaskId:6 StartTime:1741769488}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-0 mr-1-0 mr-2-0 mr-3-0 mr-5-0 mr-4-0 mr-7-0 mr-6-0] TaskId:0 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-0] TaskId:0 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-1 mr-1-1 mr-2-1 mr-3-1 mr-5-1 mr-4-1 mr-7-1 mr-6-1] TaskId:1 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-1] TaskId:1 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-2 mr-1-2 mr-2-2 mr-3-2 mr-5-2 mr-4-2 mr-7-2 mr-6-2] TaskId:2 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-2] TaskId:2 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-3 mr-1-3 mr-2-3 mr-3-3 mr-5-3 mr-4-3 mr-7-3 mr-6-3] TaskId:3 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-3] TaskId:3 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-4 mr-1-4 mr-2-4 mr-3-4 mr-5-4 mr-4-4 mr-7-4 mr-6-4] TaskId:4 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-4] TaskId:4 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-5 mr-1-5 mr-2-5 mr-3-5 mr-5-5 mr-4-5 mr-7-5 mr-6-5] TaskId:5 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-5] TaskId:5 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-6 mr-1-6 mr-2-6 mr-3-6 mr-5-6 mr-4-6 mr-7-6 mr-6-6] TaskId:6 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-6] TaskId:6 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-7 mr-1-7 mr-2-7 mr-3-7 mr-5-7 mr-4-7 mr-7-7 mr-6-7] TaskId:7 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-7] TaskId:7 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-8 mr-1-8 mr-2-8 mr-3-8 mr-5-8 mr-4-8 mr-7-8 mr-6-8] TaskId:8 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-8] TaskId:8 StartTime:1741769489}
+Worker 124372: receive: {TaskType:1 Filename:[mr-0-9 mr-1-9 mr-2-9 mr-3-9 mr-5-9 mr-4-9 mr-7-9 mr-6-9] TaskId:9 NReduce:10 StartTime:1741769489}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-9] TaskId:9 StartTime:1741769489}
+Worker 124372: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+All tasks have finished
+--- indexer test: PASS
+*** Starting map parallelism test.
+../pg-being_ernest.txt
+../pg-dorian_gray.txt
+../pg-frankenstein.txt
+../pg-grimm.txt
+../pg-huckleberry_finn.txt
+../pg-metamorphosis.txt
+../pg-sherlock_holmes.txt
+../pg-tom_sawyer.txt
+Master 124428 : start at /var/tmp/824-mr-0 
+Worker 124442: receive: {TaskType:0 Filename:[../pg-being_ernest.txt] TaskId:0 NReduce:10 StartTime:1741769493}
+Worker 124441: receive: {TaskType:0 Filename:[../pg-dorian_gray.txt] TaskId:1 NReduce:10 StartTime:1741769493}
+Master: receive submission: &{TaskType:0 Filename:[mr-0-7 mr-0-6] TaskId:0 StartTime:1741769493}
+Worker 124442: receive: {TaskType:0 Filename:[../pg-frankenstein.txt] TaskId:2 NReduce:10 StartTime:1741769494}
+Master: receive submission: &{TaskType:0 Filename:[mr-1-0 mr-1-3] TaskId:1 StartTime:1741769493}
+Worker 124441: receive: {TaskType:0 Filename:[../pg-grimm.txt] TaskId:3 NReduce:10 StartTime:1741769494}
+Master: receive submission: &{TaskType:0 Filename:[mr-2-7 mr-2-6] TaskId:2 StartTime:1741769494}
+Master: receive submission: &{TaskType:0 Filename:[mr-3-3 mr-3-0] TaskId:3 StartTime:1741769494}
+Worker 124442: receive: {TaskType:0 Filename:[../pg-huckleberry_finn.txt] TaskId:4 NReduce:10 StartTime:1741769495}
+Worker 124441: receive: {TaskType:0 Filename:[../pg-metamorphosis.txt] TaskId:5 NReduce:10 StartTime:1741769495}
+Master: receive submission: &{TaskType:0 Filename:[mr-5-0 mr-5-3] TaskId:5 StartTime:1741769495}
+Master: receive submission: &{TaskType:0 Filename:[mr-4-7 mr-4-6] TaskId:4 StartTime:1741769495}
+Worker 124441: receive: {TaskType:0 Filename:[../pg-sherlock_holmes.txt] TaskId:6 NReduce:10 StartTime:1741769496}
+Worker 124442: receive: {TaskType:0 Filename:[../pg-tom_sawyer.txt] TaskId:7 NReduce:10 StartTime:1741769496}
+Master: receive submission: &{TaskType:0 Filename:[mr-7-7 mr-7-6] TaskId:7 StartTime:1741769496}
+Master: receive submission: &{TaskType:0 Filename:[mr-6-0 mr-6-3] TaskId:6 StartTime:1741769496}
+Worker 124442: receive: {TaskType:1 Filename:[mr-1-0 mr-3-0 mr-5-0 mr-6-0] TaskId:0 NReduce:10 StartTime:1741769497}
+Worker 124441: receive: {TaskType:1 Filename:[] TaskId:1 NReduce:10 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-1] TaskId:1 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-0] TaskId:0 StartTime:1741769497}
+Worker 124441: receive: {TaskType:1 Filename:[] TaskId:2 NReduce:10 StartTime:1741769497}
+Worker 124442: receive: {TaskType:1 Filename:[mr-1-3 mr-3-3 mr-5-3 mr-6-3] TaskId:3 NReduce:10 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-2] TaskId:2 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-3] TaskId:3 StartTime:1741769497}
+Worker 124441: receive: {TaskType:1 Filename:[] TaskId:4 NReduce:10 StartTime:1741769497}
+Worker 124442: receive: {TaskType:1 Filename:[] TaskId:5 NReduce:10 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-4] TaskId:4 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-5] TaskId:5 StartTime:1741769497}
+Worker 124441: receive: {TaskType:1 Filename:[mr-0-6 mr-2-6 mr-4-6 mr-7-6] TaskId:6 NReduce:10 StartTime:1741769497}
+Worker 124442: receive: {TaskType:1 Filename:[mr-0-7 mr-2-7 mr-4-7 mr-7-7] TaskId:7 NReduce:10 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-6] TaskId:6 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-7] TaskId:7 StartTime:1741769497}
+Worker 124441: receive: {TaskType:1 Filename:[] TaskId:8 NReduce:10 StartTime:1741769497}
+Worker 124442: receive: {TaskType:1 Filename:[] TaskId:9 NReduce:10 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-8] TaskId:8 StartTime:1741769497}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-9] TaskId:9 StartTime:1741769497}
+Worker 124441: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+Worker 124442: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+--- map parallelism test: PASS
+All tasks have finished
+*** Starting reduce parallelism test.
+../pg-being_ernest.txt
+../pg-dorian_gray.txt
+../pg-frankenstein.txt
+../pg-grimm.txt
+../pg-huckleberry_finn.txt
+../pg-metamorphosis.txt
+../pg-sherlock_holmes.txt
+../pg-tom_sawyer.txt
+Master 124508 : start at /var/tmp/824-mr-0 
+Worker 124521: receive: {TaskType:0 Filename:[../pg-being_ernest.txt] TaskId:0 NReduce:10 StartTime:1741769500}
+Worker 124520: receive: {TaskType:0 Filename:[../pg-dorian_gray.txt] TaskId:1 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-0-0 mr-0-5 mr-0-6 mr-0-3 mr-0-4 mr-0-1 mr-0-2 mr-0-9] TaskId:0 StartTime:1741769500}
+Worker 124521: receive: {TaskType:0 Filename:[../pg-frankenstein.txt] TaskId:2 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-1-4 mr-1-1 mr-1-2 mr-1-9 mr-1-0 mr-1-5 mr-1-6 mr-1-3] TaskId:1 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-2-6 mr-2-3 mr-2-4 mr-2-1 mr-2-2 mr-2-9 mr-2-0 mr-2-5] TaskId:2 StartTime:1741769500}
+Worker 124520: receive: {TaskType:0 Filename:[../pg-grimm.txt] TaskId:3 NReduce:10 StartTime:1741769500}
+Worker 124521: receive: {TaskType:0 Filename:[../pg-huckleberry_finn.txt] TaskId:4 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-3-2 mr-3-9 mr-3-0 mr-3-5 mr-3-6 mr-3-3 mr-3-4 mr-3-1] TaskId:3 StartTime:1741769500}
+Worker 124520: receive: {TaskType:0 Filename:[../pg-metamorphosis.txt] TaskId:5 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-5-9 mr-5-0 mr-5-5 mr-5-6 mr-5-3 mr-5-4 mr-5-1 mr-5-2] TaskId:5 StartTime:1741769500}
+Worker 124520: receive: {TaskType:0 Filename:[../pg-sherlock_holmes.txt] TaskId:6 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-4-6 mr-4-3 mr-4-4 mr-4-1 mr-4-2 mr-4-9 mr-4-0 mr-4-5] TaskId:4 StartTime:1741769500}
+Worker 124521: receive: {TaskType:0 Filename:[../pg-tom_sawyer.txt] TaskId:7 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:0 Filename:[mr-7-5 mr-7-6 mr-7-3 mr-7-4 mr-7-1 mr-7-2 mr-7-9 mr-7-0] TaskId:7 StartTime:1741769500}
+Worker 124521: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Master: receive submission: &{TaskType:0 Filename:[mr-6-1 mr-6-2 mr-6-9 mr-6-0 mr-6-5 mr-6-6 mr-6-3 mr-6-4] TaskId:6 StartTime:1741769500}
+Worker 124520: receive: {TaskType:1 Filename:[mr-0-0 mr-1-0 mr-2-0 mr-3-0 mr-5-0 mr-4-0 mr-7-0 mr-6-0] TaskId:0 NReduce:10 StartTime:1741769500}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-0] TaskId:0 StartTime:1741769500}
+Worker 124520: receive: {TaskType:1 Filename:[mr-0-1 mr-1-1 mr-2-1 mr-3-1 mr-5-1 mr-4-1 mr-7-1 mr-6-1] TaskId:1 NReduce:10 StartTime:1741769501}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-1] TaskId:1 StartTime:1741769501}
+Worker 124520: receive: {TaskType:1 Filename:[mr-0-2 mr-1-2 mr-2-2 mr-3-2 mr-5-2 mr-4-2 mr-7-2 mr-6-2] TaskId:2 NReduce:10 StartTime:1741769502}
+Worker 124521: receive: {TaskType:1 Filename:[mr-0-3 mr-1-3 mr-2-3 mr-3-3 mr-5-3 mr-4-3 mr-7-3 mr-6-3] TaskId:3 NReduce:10 StartTime:1741769503}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-2] TaskId:2 StartTime:1741769502}
+Worker 124520: receive: {TaskType:1 Filename:[mr-0-4 mr-1-4 mr-2-4 mr-3-4 mr-5-4 mr-4-4 mr-7-4 mr-6-4] TaskId:4 NReduce:10 StartTime:1741769503}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-3] TaskId:3 StartTime:1741769503}
+Worker 124521: receive: {TaskType:1 Filename:[mr-0-5 mr-1-5 mr-2-5 mr-3-5 mr-5-5 mr-4-5 mr-7-5 mr-6-5] TaskId:5 NReduce:10 StartTime:1741769505}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-4] TaskId:4 StartTime:1741769503}
+Worker 124520: receive: {TaskType:1 Filename:[mr-0-6 mr-1-6 mr-2-6 mr-3-6 mr-5-6 mr-4-6 mr-7-6 mr-6-6] TaskId:6 NReduce:10 StartTime:1741769505}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-5] TaskId:5 StartTime:1741769505}
+Worker 124521: receive: {TaskType:1 Filename:[] TaskId:7 NReduce:10 StartTime:1741769506}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-7] TaskId:7 StartTime:1741769506}
+Worker 124521: receive: {TaskType:1 Filename:[] TaskId:8 NReduce:10 StartTime:1741769506}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-8] TaskId:8 StartTime:1741769506}
+Worker 124521: receive: {TaskType:1 Filename:[mr-0-9 mr-1-9 mr-2-9 mr-3-9 mr-5-9 mr-4-9 mr-7-9 mr-6-9] TaskId:9 NReduce:10 StartTime:1741769506}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-6] TaskId:6 StartTime:1741769505}
+Worker 124520: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+All tasks have finished
+Master: receive submission: &{TaskType:1 Filename:[mr-out-9] TaskId:9 StartTime:1741769506}
+Worker 124521: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+--- reduce parallelism test: PASS
+*** Starting crash test.
+../pg-being_ernest.txt
+../pg-dorian_gray.txt
+../pg-frankenstein.txt
+../pg-grimm.txt
+../pg-huckleberry_finn.txt
+../pg-metamorphosis.txt
+../pg-sherlock_holmes.txt
+../pg-tom_sawyer.txt
+Master 124619 : start at /var/tmp/824-mr-0 
+Worker 124637: receive: {TaskType:0 Filename:[../pg-being_ernest.txt] TaskId:0 NReduce:10 StartTime:1741769510}
+Worker 124631: receive: {TaskType:0 Filename:[../pg-dorian_gray.txt] TaskId:1 NReduce:10 StartTime:1741769510}
+Worker 124639: receive: {TaskType:0 Filename:[../pg-frankenstein.txt] TaskId:2 NReduce:10 StartTime:1741769510}
+Master: receive submission: &{TaskType:0 Filename:[mr-0-2 mr-0-9 mr-0-0 mr-0-5] TaskId:0 StartTime:1741769510}
+Worker 124640: receive: {TaskType:0 Filename:[../pg-grimm.txt] TaskId:3 NReduce:10 StartTime:1741769510}
+Worker 124637: receive: {TaskType:0 Filename:[../pg-huckleberry_finn.txt] TaskId:4 NReduce:10 StartTime:1741769510}
+Master: receive submission: &{TaskType:0 Filename:[mr-2-2 mr-2-9 mr-2-0 mr-2-5] TaskId:2 StartTime:1741769510}
+Worker 124639: receive: {TaskType:0 Filename:[../pg-metamorphosis.txt] TaskId:5 NReduce:10 StartTime:1741769510}
+Master: receive submission: &{TaskType:0 Filename:[mr-3-0 mr-3-5 mr-3-2 mr-3-9] TaskId:3 StartTime:1741769510}
+Master: receive submission: &{TaskType:0 Filename:[mr-5-9 mr-5-0 mr-5-5 mr-5-2] TaskId:5 StartTime:1741769510}
+Worker 124640: receive: {TaskType:0 Filename:[../pg-sherlock_holmes.txt] TaskId:6 NReduce:10 StartTime:1741769510}
+Worker 124639: receive: {TaskType:0 Filename:[../pg-tom_sawyer.txt] TaskId:7 NReduce:10 StartTime:1741769510}
+Master: receive submission: &{TaskType:0 Filename:[mr-6-9 mr-6-0 mr-6-5 mr-6-2] TaskId:6 StartTime:1741769510}
+Worker 124640: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124673: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124675: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124640: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124673: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124675: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124640: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124675: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124673: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Master: receive submission: &{TaskType:0 Filename:[mr-1-5 mr-1-2 mr-1-9 mr-1-0] TaskId:1 StartTime:1741769510}
+Worker 124631: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124640: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Worker 124675: receive: {TaskType:0 Filename:[../pg-huckleberry_finn.txt] TaskId:4 NReduce:10 StartTime:1741769520}
+Worker 124673: receive: {TaskType:0 Filename:[../pg-tom_sawyer.txt] TaskId:7 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:0 Filename:[mr-4-2 mr-4-9 mr-4-0 mr-4-5] TaskId:4 StartTime:1741769520}
+Worker 124675: receive: {TaskType:2 Filename:[] TaskId:-1 NReduce:0 StartTime:0}
+Master: receive submission: &{TaskType:0 Filename:[mr-7-5 mr-7-2 mr-7-9 mr-7-0] TaskId:7 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[mr-0-0 mr-2-0 mr-3-0 mr-5-0 mr-6-0 mr-1-0 mr-4-0 mr-7-0] TaskId:0 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-0] TaskId:0 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[] TaskId:1 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-1] TaskId:1 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[mr-0-2 mr-2-2 mr-3-2 mr-5-2 mr-6-2 mr-1-2 mr-4-2 mr-7-2] TaskId:2 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-2] TaskId:2 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[] TaskId:3 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-3] TaskId:3 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[] TaskId:4 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-4] TaskId:4 StartTime:1741769520}
+Worker 124631: receive: {TaskType:1 Filename:[mr-0-5 mr-2-5 mr-3-5 mr-5-5 mr-6-5 mr-1-5 mr-4-5 mr-7-5] TaskId:5 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-5] TaskId:5 StartTime:1741769520}
+Worker 124631: receive: {TaskType:1 Filename:[] TaskId:7 NReduce:10 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[] TaskId:6 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-6] TaskId:6 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-7] TaskId:7 StartTime:1741769520}
+Worker 124631: receive: {TaskType:1 Filename:[] TaskId:8 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-8] TaskId:8 StartTime:1741769520}
+Worker 124673: receive: {TaskType:1 Filename:[mr-0-9 mr-2-9 mr-3-9 mr-5-9 mr-6-9 mr-1-9 mr-4-9 mr-7-9] TaskId:9 NReduce:10 StartTime:1741769520}
+Master: receive submission: &{TaskType:1 Filename:[mr-out-9] TaskId:9 StartTime:1741769520}
+Worker 124631: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+Worker 124673: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+All tasks have finished
+Worker 124760: receive: {TaskType:3 Filename:[] TaskId:-2 NReduce:0 StartTime:0}
+--- crash test: PASS
+*** PASSED ALL TESTS

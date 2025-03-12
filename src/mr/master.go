@@ -183,9 +183,13 @@ func (m *Master) server() {
 // 这个会被定期调用用来检验工作是否完成
 func (m *Master) Done() bool {
 	m.mu.Lock()
-	defer m.mu.Unlock()
+	res := m.completedTaskNum >= len(m.files)
+	m.mu.Unlock()
+	if res {
+		fmt.Printf("All tasks have finished\n")
+	}
 	// Your code here.
-	return m.completedTaskNum >= len(m.files)
+	return res
 }
 
 // create a Master.
