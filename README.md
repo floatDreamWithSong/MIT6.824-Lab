@@ -1,5 +1,8 @@
 # MIT6.824实验
 ## Lab1: MapReduce
+
+[lab1-link](http://nil.csail.mit.edu/6.824/2020/labs/lab-mr.html)
+
 ### Introduction
 In this lab you'll build a MapReduce system.
 You'll implement **a worker process** that **calls** application Map and Reduce functions
@@ -79,7 +82,7 @@ $
 测试脚本期望输出文件名为 mr-out-X，每个 reduce 任务一个文件。
 空实现的 mr/coordinator.go 和 mr/worker.go 不会产生这些文件（也不会做太多其他事情），所以测试失败。
 
-## 规则
+### 规则
 Map 阶段应将中间键值对分成 nReduce 个 reduce 任务的桶，其中 nReduce 是 main/mrcoordinator.go 传递给 MakeCoordinator() 的参数。每个 mapper 应创建 nReduce 个中间文件，供 reduce 任务使用。
 worker 实现应将 reduce 任务的输出放在 mr-out-X 文件中。
 reduce 函数的输出应使用 Go 的 %v %v 格式生成，与 main/mrsequential.go 中的格式一致。测试脚本会检查格式是否正确。
@@ -89,7 +92,7 @@ main/mrcoordinator.go 期望 mr/coordinator.go 实现一个 Done() 方法，当 
 当作业完成后，worker 进程应退出。一种实现方式是检查 call() 的返回值：
 如果 worker 无法联系到 coordinator，可以假设 coordinator 已经因为作业完成而退出，因此 worker 可以终止。根据设计，你也可以让 coordinator 给 worker 发送“退出”伪任务。
 
-## 提示
+### 提示
 开发和调试指南 有一些开发和调试的提示。
 一种开始方式是修改 mr/worker.go 中的 Worker()，通过 RPC 向 coordinator 请求任务。然后修改 coordinator 以响应未启动的 map 任务的文件名。然后修改 worker 以读取该文件并像 mrsequential.go 中那样调用 Map 函数。
 应用程序的 Map 和 Reduce 函数在运行时通过 Go 的插件 包加载，文件名以 .so 结尾。
@@ -124,8 +127,124 @@ coordinator 难以区分崩溃的 worker、alive 但卡住的 worker 和执行�
 如果你实现备份任务（第 3.6 节），请注意，当 workers 在不崩溃的情况下执行任务时，不应安排额外的任务。备份任务应在相对较长时间（例如 10 秒）后才调度。
 你可以使用 mrapps/crash.go 应用程序插件来测试崩溃恢复。它会在 Map 和 Reduce 函数中随机退出。
 为了防止在崩溃情况下观察到部分写入的文件，MapReduce 论文提到了使用临时文件并在完全写入后原子重命名的技巧。可以使用 ioutil.TempFile 或 os.CreateTemp（如果你使用的是 Go 1.17 或更高版本）来创建临时文件，并使用 os.Rename 进行原子重命名。
-## 无学分挑战练习
-实现你自己的 MapReduce 应用程序（参见 mrapps/* 中的示例），例如分布式 Grep（参见 MapReduce 论文的第 2.3 节）。
-让你的 MapReduce coordinator 和 workers 在单独的机器上运行，就像在实际中一样。
-你需要设置你的 RPC 通过 TCP/IP 而不是 Unix 套接字进行通信（参见 Coordinator.server() 中的注释行），并使用共享文件系统进行文件读写。
-例如，你可以在 MIT 的 Athena 集群 上的多台机器上使用 AFS，或者在 AWS 上租用几台实例并使用 S3 进行存储。
+
+## Lab2: Raft
+
+[lab2-link](http://nil.csail.mit.edu/6.824/2020/labs/lab-raft.html)
+
+你将做一系列的实验区构建一个具有容错能力的K/V存储系统。你需要实现一个Raft(一个replicated state machine, 一个复制状态机)。下一个实验将基于Raft构建一个K/V服务。
+
+raft将客户端请求收集为一个序列，称为log,并确保所有发备份服务器看到相同的log，每一个副本根据log的顺序执行客户端的请求，保持所有副本的状态相同。如果一个服务器挂了但是等会儿恢复，Raft将帮助它跟进log。
+
+In this lab you'll implement Raft as a Go object type with associated methods, meant to be used as a module in a larger service. A set of Raft instances talk to each other with RPC to maintain replicated logs. Your Raft interface will support an indefinite sequence of numbered commands, also called log entries. The entries are numbered with index numbers. The log entry with a given index will eventually be committed. At that point, your Raft should send the log entry to the larger service for it to execute.
+
+在这个实验中，你将实现一个Raft对象类型，它有一组关联的方法，用作一个更大的服务的模块。一组Raft实例通过RPC与每个其他实例通信，以维护复制日志。你的Raft接口将支持一个无限序列的编号命令，也称为日志条目。具有给定索引的日志条目最终将被提交。在那时，你的Raft应该将日志条目发送给更大的服务，让它执行。
+
+You should follow the design in the extended Raft paper, with particular attention to Figure 2. You'll implement most of what's in the paper, including saving persistent state and reading it after a node fails and then restarts. You will not implement cluster membership changes (Section 6). You'll implement log compaction / snapshotting (Section 7) in a later lab.
+
+你应该遵循[扩展的Raft论文的设计](http://nil.csail.mit.edu/6.824/2020/papers/raft-extended.pdf)，特别关注图2。你将实现大部分论文中的内容，包括保存持久状态并在节点失败后重新启动后读取它。你不会实现集群成员更改（第6节）。你将在以后的实验中实现日志压缩/快照（第7节）。
+
+You may find this guide useful, as well as this advice about locking and structure for concurrency. For a wider perspective, have a look at Paxos, Chubby, Paxos Made Live, Spanner, Zookeeper, Harp, Viewstamped Replication, and Bolosky et al.
+
+你可能会发现这个[指南](https://thesquareplanet.com/blog/students-guide-to-raft/)很有用，以及关于并发的[锁定](http://nil.csail.mit.edu/6.824/2020/labs/raft-locking.txt)和[结构](http://nil.csail.mit.edu/6.824/2020/labs/raft-structure.txt)的建议。对于更广泛的视角，看看Paxos，Chubby，Paxos Made Live，Spanner，Zookeeper，Harp，Viewstamped Replication和[Bolosky等人](http://static.usenix.org/event/nsdi11/tech/full_papers/Bolosky.pdf)。
+
+We supply you with skeleton code src/raft/raft.go. We also supply a set of tests, which you should use to drive your implementation efforts, and which we'll use to grade your submitted lab. The tests are in src/raft/test_test.go.
+
+我们提供了src/raft/raft.go的框架代码，你就在这儿写代码。我们还提供了一组测试，您应该使用它们来驱动您的实现努力，我们将使用它们来评分您提交的实验。测试位于src/raft/test_test.go。
+
+运行：
+
+```shell
+cd src/raft
+go test
+```
+
+A service calls Make(peers,me,…) to create a Raft peer. The peers argument is an array of network identifiers of the Raft peers (including this one), for use with RPC. The me argument is the index of this peer in the peers array. Start(command) asks Raft to start the processing to append the command to the replicated log. Start() should return immediately, without waiting for the log appends to complete. The service expects your implementation to send an ApplyMsg for each newly committed log entry to the applyCh channel argument to Make().
+
+通过调用`Make(peers,me,…)`来创建一个Raft对等点。peers参数是Raft对等点的网络标识符数组（包括这个），用于RPC。me参数是peers数组中这个对等点的索引。Start(command)要求Raft开始将命令附加到复制日志。Start()应该立即返回，而不等待日志追加完成。service你的代码可以为每个新提交的日志条目发送一个ApplyMsg到applyCh通道参数。
+
+raft.go contains example code that sends an RPC (sendRequestVote()) and that handles an incoming RPC (RequestVote()). Your Raft peers should exchange RPCs using the labrpc Go package (source in src/labrpc). The tester can tell labrpc to delay RPCs, re-order them, and discard them to simulate various network failures. While you can temporarily modify labrpc, make sure your Raft works with the original labrpc, since that's what we'll use to test and grade your lab. Your Raft instances must interact only with RPC; for example, they are not allowed to communicate using shared Go variables or files.
+
+raft.go包含一个例子，它发送一个RPC（sendRequestVote()）和一个传入的RPC（RequestVote()）。你的Raft对等点应该使用labrpc Go包（源在src/labrpc）来交换RPC。tester可以告诉labrpc延迟RPC，重新排序它们，并且丢弃它们来模拟各种网络故障。虽然你可以暂时修改labrpc，但确保你的Raft与原始的labrpc一起工作，因为这就是我们将用来测试和评分你的实验。你的Raft实例必须只与RPC交互；例如，它们不允许使用共享的Go变量或文件进行通信。
+
+Subsequent labs build on this lab, so it is important to give yourself enough time to write solid code.
+
+后续实验基于这个实验，所以给你足够的时间来编写坚实的代码。
+
+### Part 2A
+
+**Task**
+
+Implement Raft leader election and heartbeats (AppendEntries RPCs with no log entries). The goal for Part 2A is for a single leader to be elected, for the leader to remain the leader if there are no failures, and for a new leader to take over if the old leader fails or if packets to/from the old leader are lost. Run go test -run 2A to test your 2A code.
+
+实现Raft领导者选举和心跳（带有空日志条目的AppendEntries RPC）。Part 2A的目标是选举出一个领导者，领导者在没有故障的情况下保持领导者身份，并且如果旧领导者失败或与旧领导者通信的数据包丢失，则新领导者接管。运行`go test -run 2A`来测试你的2A代码。
+
+``` shell
+go test -run 2A
+```
+
+预计输出
+``` shell
+Test (2A): initial election ...
+  ... Passed --   4.0  3   32    9170    0
+Test (2A): election after network failure ...
+  ... Passed --   6.1  3   70   13895    0
+PASS
+ok      raft    10.187s
+```
+
+Each "Passed" line contains five numbers; these are the time that the test took in seconds, the number of Raft peers (usually 3 or 5), the number of RPCs sent during the test, the total number of bytes in the RPC messages, and the number of log entries that Raft reports were committed. Your numbers will differ from those shown here. You can ignore the numbers if you like, but they may help you sanity-check the number of RPCs that your implementation sends. For all of labs 2, 3, and 4, the grading script will fail your solution if it takes more than 600 seconds for all of the tests (go test), or if any individual test takes more than 120 seconds.
+
+每个带有“Passed”的输出行包含5个数字，它们分别为：
+1. 测试用时
+2. Raft peers
+3. RPC发送数
+4. RPC消耗字节数
+5. 提交的日志数
+每个测试点的用时不超过2分钟。
+
+Hint: 提示
+【核心实现步骤】
+
+选举机制实现:
+- 参照论文图2设计状态机
+- 在raft.go中添加选举相关的状态字段
+- 定义日志条目结构体
+- 实现RequestVoteArgs/Reply结构体
+- 创建后台goroutine定期触发选举
+- 编写RequestVote RPC处理程序
+
+心跳机制实现:
+- 定义AppendEntries RPC结构体
+- leader定期发送心跳包
+- 编写重置选举超时的处理程序
+
+【关键注意事项】
+
+• 选举超时随机化:
+- 不同节点设置不同超时时间(建议150-300ms范围)
+- 实际设置需考虑测试约束(心跳频率≤10次/秒)
+- 保证5秒内完成选举(即使需要多轮投票)
+
+• 实现细节:
+- 使用time.Sleep而非Timer/Ticker
+- 遵循图2的完整选举逻辑
+- 实现GetState()方法
+- 处理rf.Kill()状态
+
+【调试建议】
+
+消息跟踪调试:
+- 使用DPrintf记录消息收发
+- 收集输出: go test -run 2A > out
+- 分析out文件中的消息流
+
+并发检测:
+- 使用go test -race检查数据竞争
+- 合理使用锁机制(参考锁定指南)
+
+常见问题排查:
+- 检查字段命名是否符合RPC规范
+- 验证选举超时随机化实现
+- 确保心跳频率不超过限制
+- 处理网络分区等边界情况
