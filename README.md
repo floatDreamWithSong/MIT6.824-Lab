@@ -208,14 +208,14 @@ Hint: 提示
 
 选举机制实现:
 - 参照论文图2设计状态机
-- 在raft.go中添加选举相关的状态字段
-- 定义日志条目结构体
-- 实现RequestVoteArgs/Reply结构体
+- 在raft.go中添加选举相关的状态字段 ✔
+- 定义日志条目结构体 ✔
+- 实现RequestVoteArgs/Reply结构体 ✔
 - 创建后台goroutine定期触发选举
 - 编写RequestVote RPC处理程序
 
 心跳机制实现:
-- 定义AppendEntries RPC结构体
+- 定义AppendEntries RPC结构体 ✔
 - leader定期发送心跳包
 - 编写重置选举超时的处理程序
 

@@ -71,7 +71,26 @@ type Raft struct {
 
 	// 您的数据在这里（2A，2B，2C）。
 	// 查看论文的Figure 2以了解Raft服务器必须维护的状态。
+	// 非易失性状态
+	currentTerm int
+	votedFor int
+	log []LogEntry
+	// 易失性状态
+	commitIndex int
+	lastApplied int
+	// leader 状态
+	nextIndex []int
+	matchIndex []int
+	// candidate 状态
+	// 选举定时器
+	electionTimer int
+	// 心跳定时器
+	heartbeatTimer int
+}
 
+type LogEntry struct {
+	Term int
+	Command interface{}
 }
 
 // return currentTerm and whether this server
@@ -139,6 +158,18 @@ func (rf *Raft) readPersist(data []byte) {
 // 字段名称必须以大写字母开头！
 type RequestVoteArgs struct {
 	// Your data here (2A, 2B).
+	term int // 候选人现在的term
+	candidateId int // 候选人的ID
+	lastLogIndex int // 候选人最后的log index
+	lastLogTerm int // 候选人最后log的term
+}
+type AppendEntriesArgs struct {
+	term int // leader的term
+	leaderId int // leader的ID
+	prevLogIndex int // leader的前一个log的index
+	prevLogTerm int // leader的前一个log的term
+	entries []LogEntry // 要发送的log entries
+	leaderCommit int // leader commit的index
 }
 
 //
@@ -147,14 +178,22 @@ type RequestVoteArgs struct {
 //
 type RequestVoteReply struct {
 	// Your data here (2A).
+	term int // 投票者的term，用于更新候选人term
+	voteGranted bool // 候选人是否得到选票 
 }
-
+type AppendEntriesReply struct {
+	term int // follower的term，用于更新候选人term
+	success bool // 如果匹配了prevLogIndex和prevLogTerm，则为true
+}
 //
 // example RequestVote RPC handler.
 //
 // RPC 处理程序。
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
+}
+func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply) {
+
 }
 
 //
@@ -188,10 +227,13 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 //
 // RPC调用。
 func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *RequestVoteReply) bool {
-	ok := rf.peers[server].Call("Raft.RequestVote", args, reply)
+	ok := rf.peers[server].Call("Raft.RequestVote", args, reply) // 调用目的服务器的RequestVote方法
 	return ok
 }
-
+func (rf *Raft) sendAppendEntries(server int, args *AppendEntriesArgs, reply *AppendEntriesReply) bool {
+	ok := rf.peers[server].Call("Raft.AppendEntries", args, reply)
+	return ok
+}
 
 //
 // the service using Raft (e.g. a k/v server) wants to start
