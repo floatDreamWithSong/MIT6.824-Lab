@@ -5,10 +5,14 @@ package raft
 // rf.GetState() (term, isLeader)					      询问Raft当前的term，以及它是否认为自己是leader
 // ApplyMsg   						每次新的条目被提交到日志时，每个Raft Peer应该发送一个ApplyMsg到同一个服务器。
 
-import "sync"
-import "sync/atomic"
-import "../labrpc"
-import "time"
+import (
+	"math/rand"
+	"sync"
+	"sync/atomic"
+	"time"
+
+	"../labrpc"
+)
 
 // import "bytes"
 // import "../labgob"
@@ -19,13 +23,29 @@ import "time"
 // 在Lab 3中，您可能希望在applyCh上发送其他类型的消息（例如快照）；
 // 此时您可以向ApplyMsg添加字段，但对于其他用途，请将CommandValid设置为false。
 
+const (
+	// 状态
+	FOLLOWER = iota
+	CANDIDATE
+	LEADER
+)
+
+const (
+	// 常量
+	HEARTBEAT_TIMEOUT = 50
+	APPLY_TIMEOUT = 30
+)
+
 type ApplyMsg struct {
 	CommandValid bool
 	Command      interface{}
 	CommandIndex int
 }
 
-// 一个Go对象实现了一个Raft对等方。
+type LogEntry struct {
+	Term int
+	Command interface{}
+}
 
 type Raft struct {
 	mu        sync.Mutex          // Peer状态锁
@@ -58,9 +78,17 @@ type Raft struct {
 	stage int // 0:follower 1:candidate 2:leader
 }
 
-type LogEntry struct {
-	Term int
-	Command interface{}
+func (rf* Raft) setElectionTimeOut(server int64) {
+	// 设置基础时间
+    t:= time.Now().Add(time.Millisecond*800)
+	// 设置随机种子
+    r := rand.New(rand.NewSource(time.Now().Unix() + server))
+	// 获取随机波动的时间范围
+	ms:=r.Int63() %300
+	// 设置超时时间
+	t = t.Add(time.Duration(ms)*time.Millisecond)
+	rf.electionTimeOut = t
+	DPrintf("%d 的选举超时时间是 %v", rf.me, rf.electionTimeOut)
 }
 
 // 返回当前term和该服务器是否认为自己是leader。
