@@ -8,6 +8,7 @@ package raft
 import "sync"
 import "sync/atomic"
 import "../labrpc"
+import "time"
 
 // import "bytes"
 // import "../labgob"
@@ -35,22 +36,26 @@ type Raft struct {
 
 	// 您的数据在这里（2A，2B，2C）。
 	// 查看论文的Figure 2以了解Raft服务器必须维护的状态。
-	
-	// 非易失性状态
-	currentTerm int
-	votedFor int
-	log []LogEntry
+
+	// 非易失性状态（在响应RPC前就已经被持久化）
+	currentTerm int // 当前term
+	votedFor int 	// 投票给谁
+	log []LogEntry  // 日志条目
 	// 易失性状态
-	commitIndex int
-	lastApplied int
-	// leader 状态
-	nextIndex []int
-	matchIndex []int
+	commitIndex int // 已经commit的最后日志index
+	lastApplied int // 已经应用到状态机的最后日志index
+	// leader 易失性状态, 每次选举后重新初始化
+	nextIndex []int // 对所有的服务器，下一个要发送的日志index, 初始化为leader最后一个log的index + 1
+	matchIndex []int// 对所有的服务器，已知的最新commit的日志index
 	// candidate 状态
 	// 选举定时器
-	electionTimer int
+	electionTimeOut time.Time
 	// 心跳定时器
 	heartbeatTimer int
+
+	// 其他
+	applyCh chan ApplyMsg
+	stage int // 0:follower 1:candidate 2:leader
 }
 
 type LogEntry struct {
