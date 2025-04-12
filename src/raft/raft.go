@@ -91,6 +91,87 @@ func (rf* Raft) setElectionTimeOut(server int64) {
 	DPrintf("%d 的选举超时时间是 %v", rf.me, rf.electionTimeOut)
 }
 
+func (rf *Raft) changeStage(to int,reset bool) {
+	if to == CANDIDATE {
+		/*
+			candidate的服务器规则：
+			1.转变为选举人之后开始选举
+			2.currentTerm自增
+			3.给自己投票
+			4.重置选举计时器
+		*/
+		rf.stage = CANDIDATE
+		rf.currentTerm += 1
+		rf.votedFor = rf.me
+		rf.setElectionTimeOut(int64(rf.me))
+		rf.joinElection()
+	}
+}
+
+// 如果一段时间没有收到心跳，就会发起选举
+func (rf *Raft) ticker() {
+	for rf.killed() == false {
+		time.Sleep(HEARTBEAT_TIMEOUT*time.Millisecond)
+		rf.mu.Lock()
+		// 如果是leader就发送心跳，否则超时就发起选举
+		if rf.stage == LEADER {
+			rf.leaderAppend()
+		}else {
+			if time.Now().After(rf.electionTimeOut){
+				rf.changeStage(CANDIDATE, true)
+			}
+		}
+		rf.mu.Unlock()
+	}
+}
+
+func (rf* Raft) joinElection () {
+	voteCount := 1 // 自己开始投给自己有一票
+	for i:=0;i<len(rf.peers);i++ {
+		if i == rf.me {
+			continue
+		}
+		go func(server int) {
+			rf.mu.Lock()
+			args := & RequestVoteArgs{
+				Term: rf.currentTerm,
+				CandidateId: rf.me,
+				LastLogIndex: rf.getLastLogIndex(),
+				LastLogTerm: rf.log[rf.getLastLogIndex()].Term,
+			}
+			reply := & RequestVoteReply{}
+			rf.mu.Unlock()
+			ok := rf.sendRequestVote(server, args, reply)
+			if ok {
+				rf.mu.Lock()
+				// 如果自己不是候选者，或者已经出现了新的term
+				if rf.stage != CANDIDATE || reply.Term < rf.currentTerm {
+					rf.mu.Unlock()
+					return
+				}
+				if reply.VoteGranted && args.Term == rf.currentTerm {
+					voteCount++
+					// 如果超过半数的服务器投票给了自己
+					if voteCount > len(rf.peers)/2 + 1 {
+						rf.changeStage(LEADER, true)
+					}
+					rf.mu.Unlock()
+					return
+				}
+				// 如果自己过期了
+				if reply.Term > args.Term {
+					if reply.Term > rf.currentTerm {
+						rf.currentTerm = reply.Term
+					}
+					rf.changeStage(FOLLOWER, false)
+				}
+				rf.mu.Unlock()
+				return
+			}
+		}(i)
+	}
+}
+
 // 返回当前term和该服务器是否认为自己是leader。
 
 func (rf *Raft) GetState() (int, bool) {
@@ -140,29 +221,29 @@ func (rf *Raft) readPersist(data []byte) {
 // 示例RequestVote RPC参数结构。字段名称必须以大写字母开头！
 type RequestVoteArgs struct {
 	// Your data here (2A, 2B).
-	term int // 候选人现在的term
-	candidateId int // 候选人的ID
-	lastLogIndex int // 候选人最后的log index
-	lastLogTerm int // 候选人最后log的term
+	Term int // 候选人现在的term
+	CandidateId int // 候选人的ID
+	LastLogIndex int // 候选人最后的log index
+	LastLogTerm int // 候选人最后log的term
 }
 type AppendEntriesArgs struct {
-	term int // leader的term
-	leaderId int // leader的ID
-	prevLogIndex int // leader的前一个log的index
-	prevLogTerm int // leader的前一个log的term
-	entries []LogEntry // 要发送的log entries
-	leaderCommit int // leader commit的index
+	Term int // leader的term
+	LeaderId int // leader的ID
+	PrevLogIndex int // leader的前一个log的index
+	PrevLogTerm int // leader的前一个log的term
+	Entries []LogEntry // 要发送的log entries
+	LeaderCommit int // leader commit的index
 }
 
 // 示例RequestVote RPC回复结构。字段名称必须以大写字母开头！
 type RequestVoteReply struct {
 	// Your data here (2A).
-	term int // 投票者的term，用于更新候选人term
-	voteGranted bool // 候选人是否得到选票 
+	Term int // 投票者的term，用于更新候选人term
+	VoteGranted bool // 候选人是否得到选票 
 }
 type AppendEntriesReply struct {
-	term int // follower的term，用于更新候选人term
-	success bool // 如果匹配了prevLogIndex和prevLogTerm，则为true
+	Term int // follower的term，用于更新候选人term
+	Success bool // 如果匹配了prevLogIndex和prevLogTerm，则为true
 }
 
 // RPC 处理程序。
@@ -238,10 +319,26 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.me = me
 
 	// Your initialization code here (2A, 2B, 2C).
+	rf.mu.Lock()
+	rf.stage = FOLLOWER
+	rf.currentTerm = 0
+	rf.votedFor = -1
+	rf.commitIndex = 0
+	rf.lastApplied = 0
 
-	// initialize from state persisted before a crash
+	rf.log = []LogEntry{}
+	rf.log = append(rf.log, LogEntry{Term: 0, Command: nil})
+	rf.applyCh = applyCh
+	rf.setElectionTimeOut(int64(rf.me))
+	rf.mu.Unlock()
+
+	// 恢复已被持久化的状态
 	rf.readPersist(persister.ReadRaftState())
 
+	DPrintf("init server %d, term %d",rf.me,rf.currentTerm)
+
+	go rf.ticker()
+	go rf.apppliedTicker()
 
 	return rf
 }
